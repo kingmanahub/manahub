@@ -7370,164 +7370,61 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         }
 
         do
-            local group_combat_utils = Tabs.Combat:AddLeftGroupbox("Combat Utilities")
+   -- ==========================================
+            -- ⚔️ COMBAT TAB: DIRECT COMBAT & UTILITIES
+            -- ==========================================
+            local group_combat_mods = Tabs.Combat:AddLeftGroupbox("Combat Modifiers")
 
-            group_combat_utils:AddToggle("NoStun", {
-                Text = "No Stun",
-                Default = cheat_client.config.no_stun
-            })
+            group_combat_mods:AddToggle("NoStun", { Text = "No Stun", Default = cheat_client.config.no_stun })
+            group_combat_mods:AddToggle("AntiHystericus", { Text = "No Confusion", Default = cheat_client.config.anti_confusion })
+            group_combat_mods:AddToggle("AntiBackfireViribus", { Text = "Anti-Backfire Viribus", Default = cheat_client.config.anti_backfire_viribus })
 
-            group_combat_utils:AddToggle("AntiHystericus", {
-                Text = "No Confusion",
-                Default = cheat_client.config.anti_confusion
-            })
+            local group_combat_actions = Tabs.Combat:AddRightGroupbox("Combat Actions")
 
-            group_combat_utils:AddToggle("PerfloraTeleport", {
-                Text = "Perflora Teleport",
-                Default = cheat_client.config.perflora_teleport
-            })
+            group_combat_actions:AddToggle("HoldBlock", { Text = "Hold Block (F)", Default = cheat_client.config.hold_block })
+            group_combat_actions:AddSlider("HoldBlockDelay", { Text = "Block Delay (ms)", Default = cheat_client.config.hold_block_delay, Min = 0, Max = 1000, Rounding = 0, Compact = true })
+            group_combat_actions:AddToggle("better_mana", { Text = "Better Mana Charge", Default = cheat_client.config.better_mana, Callback = function(value) cheat_client.config.better_mana = value end })
+            group_combat_actions:AddToggle("BetterUnequip", { Text = "Better Unequip", Default = cheat_client.config.better_unequip or false, Tooltip = "When your Dagger/Sword is removed, instantly equips a skill to cancel the animation then unequips", Callback = function(value) cheat_client.config.better_unequip = value end })
 
-            group_combat_utils:AddDivider()
+            group_combat_actions:AddDivider()
 
-            group_combat_utils:AddLabel("Attach to Back"):AddKeyPicker("AttachToBackKeybind", {
-                Default = cheat_client.config.attach_to_back_keybind,
-                Text = "Attach to Back",
-            })
-
+            group_combat_actions:AddLabel("Attach to Back"):AddKeyPicker("AttachToBackKeybind", { Default = cheat_client.config.attach_to_back_keybind, Text = "Attach to Back" })
             Options.AttachToBackKeybind:OnChanged(function()
                 cheat_client.config.attach_to_back_keybind = Options.AttachToBackKeybind.Value
             end)
 
-            group_combat_utils:AddDivider()
+            -- ==========================================
+            -- 🛡️ COMBAT TAB: PARRY & DEFENSE
+            -- ==========================================
+            local group_auto_parry = Tabs.Combat:AddLeftGroupbox("Auto Parry (Main)")
 
-            group_combat_utils:AddToggle("better_mana", {
-                Text = "Better Mana Charge",
-                Default = cheat_client.config.better_mana,
-                Callback = function(value)
-                    cheat_client.config.better_mana = value
-                end
-            })
+            group_auto_parry:AddToggle("AutoPerfectBlock", { Text = "Auto Perfect Block", Default = cheat_client.config.auto_perfect_block })
+            group_auto_parry:AddDropdown("ParryAbilities", { Values = {"Viribus", "Owlslash", "Shadowrush", "Verdien", "Grapple"}, Default = 1, Multi = true, Text = "Parry Abilities", Tooltip = "Select which abilities to auto parry" })
+            group_auto_parry:AddToggle("ParrySemiBlatantBlock", { Text = "Semi-Blatant Block", Default = cheat_client.config.parry_semi_blatant_block })
 
-            group_combat_utils:AddToggle("BetterUnequip", {
-                Text = "Better Unequip",
-                Default = cheat_client.config.better_unequip or false,
-                Tooltip = "When your Dagger/Sword is removed, instantly equips a skill to cancel the animation then unequips",
-                Callback = function(value)
-                    cheat_client.config.better_unequip = value
-                end
-            })
+            local group_parry_settings = Tabs.Combat:AddRightGroupbox("Parry Settings")
 
-            group_combat_utils:AddDivider()
+            group_parry_settings:AddToggle("ParryPingAdjust", { Text = "Ping Adjustment", Default = cheat_client.config.parry_ping_adjust })
+            group_parry_settings:AddToggle("ParryCustomDelay", { Text = "Use Custom Delay", Default = cheat_client.config.parry_custom_delay })
+            group_parry_settings:AddSlider("ParryCustomDelayMs", { Text = "Custom Delay", Default = cheat_client.config.custom_delay, Min = -500, Max = 500, Rounding = 1 })
+            group_parry_settings:AddSlider("ParryFovAngle", { Text = "Parry FOV Angle", Default = cheat_client.config.parry_fov_angle, Min = 0, Max = 360, Rounding = 1 })
+            group_parry_settings:AddToggle("ParryDisableWhenUnfocused", { Text = "Disable When Window Unfocused", Default = cheat_client.config.parry_disable_when_unfocused })
+            group_parry_settings:AddToggle("ParryIgnoreVisibility", { Text = "Ignore Visibility (Blatant)", Default = cheat_client.config.parry_ignore_visibility })
 
-            group_combat_utils:AddToggle("AutoMisogi", {
-                Text = "Auto Misogi",
-                Default = cheat_client.config.auto_misogi
-            })
+            -- ==========================================
+            -- 🎯 COMBAT TAB: SILENT AIM & MAGIC
+            -- ==========================================
+            local group_silent_aim = Tabs.Combat:AddLeftGroupbox("Silent Aim")
 
-            group_combat_utils:AddToggle("AntiBackfireViribus", {
-                Text = "Anti Backfire Viribus",
-                Default = cheat_client.config.anti_backfire_viribus
-            })
+            group_silent_aim:AddToggle("SilentAim", { Text = "Silent Aim", Default = cheat_client.config.silent_aim })
+            group_silent_aim:AddSlider("SilentAimFov", { Text = "FOV", Default = cheat_client.config.fov, Min = 0, Max = 200, Rounding = 1 })
+            group_silent_aim:AddToggle("IgnoreBlocking", { Text = "Ignore Blocking Players", Default = cheat_client.config.ignore_blocking, Tooltip = "Don't target players who are blocking" })
+            group_silent_aim:AddToggle("HideFovCircle", { Text = "Hide FOV Circle", Default = cheat_client.config.hide_fov_circle })
 
-            group_combat_utils:AddDivider()
+            local group_magic = Tabs.Combat:AddRightGroupbox("Magic & Exploits")
 
-                group_combat_utils:AddToggle("HoldBlock", {
-                    Text = "Hold Block (F)",
-                    Default = cheat_client.config.hold_block
-                })
-
-                group_combat_utils:AddSlider("HoldBlockDelay", {
-                    Text = "Block Delay (ms)",
-                    Default = cheat_client.config.hold_block_delay,
-                    Min = 0,
-                    Max = 1000,
-                    Rounding = 0,
-                    Compact = true
-                })
-
-            local group_auto_parry = Tabs.Combat:AddRightGroupbox("Auto Parry")
-
-            group_auto_parry:AddToggle("AutoPerfectBlock", {
-                Text = "Auto Perfect Block",
-                Default = cheat_client.config.auto_perfect_block
-            })
-
-            group_auto_parry:AddDropdown("ParryAbilities", {
-                Values = {"Viribus", "Owlslash", "Shadowrush", "Verdien", "Grapple"},
-                Default = 1,
-                Multi = true,
-                Text = "Parry Abilities",
-                Tooltip = "Select which abilities to auto parry"
-            })
-
-            local group_parry_settings = Tabs.Combat:AddLeftGroupbox("Parry Settings")
-
-            group_parry_settings:AddToggle("ParryPingAdjust", {
-                Text = "Ping Adjustment",
-                Default = cheat_client.config.parry_ping_adjust
-            })
-
-            group_parry_settings:AddToggle("ParryCustomDelay", {
-                Text = "Use Custom Delay",
-                Default = cheat_client.config.parry_custom_delay
-            })
-
-            group_parry_settings:AddSlider("ParryCustomDelayMs", {
-                Text = "Custom Delay",
-                Default = cheat_client.config.custom_delay,
-                Min = -500,
-                Max = 500,
-                Rounding = 1
-            })
-
-            group_parry_settings:AddSlider("ParryFovAngle", {
-                Text = "Parry FOV Angle",
-                Default = cheat_client.config.parry_fov_angle,
-                Min = 0,
-                Max = 360,
-                Rounding = 1
-            })
-
-            group_parry_settings:AddToggle("ParryDisableWhenUnfocused", {
-                Text = "Disable When Window Unfocused",
-                Default = cheat_client.config.parry_disable_when_unfocused
-            })
-
-            group_parry_settings:AddToggle("ParryIgnoreVisibility", {
-                Text = "Ignore Visibility (Blatant)",
-                Default = cheat_client.config.parry_ignore_visibility
-            })
-
-            group_parry_settings:AddToggle("ParrySemiBlatantBlock", {
-                Text = "Semi-Blatant Block",
-                Default = cheat_client.config.parry_semi_blatant_block
-            })
-
-            local group_silent_aim = Tabs.Combat:AddRightGroupbox("Silent Aim")
-
-            group_silent_aim:AddToggle("SilentAim", {
-                Text = "Silent Aim",
-                Default = cheat_client.config.silent_aim
-            })
-
-            group_silent_aim:AddSlider("SilentAimFov", {
-                Text = "FOV",
-                Default = cheat_client.config.fov,
-                Min = 0,
-                Max = 200,
-                Rounding = 1
-            })
-
-            group_silent_aim:AddToggle("IgnoreBlocking", {
-                Text = "Ignore Blocking Players",
-                Default = cheat_client.config.ignore_blocking,
-                Tooltip = "Don't target players who are blocking"
-            })
-
-            group_silent_aim:AddToggle("HideFovCircle", {
-                Text = "Hide FOV Circle",
-                Default = cheat_client.config.hide_fov_circle
-            })
+            group_magic:AddToggle("PerfloraTeleport", { Text = "Perflora Teleport", Default = cheat_client.config.perflora_teleport })
+            group_magic:AddToggle("AutoMisogi", { Text = "Auto Misogi", Default = cheat_client.config.auto_misogi })
 
             Toggles.NoStun:OnChanged(function()
                 local value = Toggles.NoStun.Value
