@@ -81,20 +81,26 @@ local Library = {
 
     MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 4,
+    CornerRadius = 12, -- More modern, rounded corners
 
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(15, 15, 15),
-        MainColor = Color3.fromRGB(25, 25, 25),
-        AccentColor = Color3.fromRGB(125, 85, 255),
-        OutlineColor = Color3.fromRGB(40, 40, 40),
-        FontColor = Color3.new(1, 1, 1),
-        Font = Font.fromEnum(Enum.Font.Code),
+        BackgroundColor = Color3.fromRGB(24, 26, 32), -- Slightly blue-tinted dark
+        MainColor = Color3.fromRGB(34, 37, 48),
+        AccentColor = Color3.fromRGB(99, 102, 241), -- Modern purple/blue
+        OutlineColor = Color3.fromRGB(50, 54, 70),
+        FontColor = Color3.fromRGB(230, 233, 240),
+        Font = Font.fromEnum(Enum.Font.Gotham),
 
-        Red = Color3.fromRGB(255, 50, 50),
-        Dark = Color3.new(0, 0, 0),
-        White = Color3.new(1, 1, 1),
+        Red = Color3.fromRGB(255, 80, 80),
+        Dark = Color3.fromRGB(20, 22, 28),
+        White = Color3.fromRGB(255, 255, 255),
+
+        -- Modern additions
+        ShadowColor = Color3.fromRGB(0, 0, 0),
+        ShadowTransparency = 0.7,
+        GradientTop = Color3.fromRGB(40, 44, 60),
+        GradientBottom = Color3.fromRGB(24, 26, 32),
     },
 
     Registry = {},
@@ -206,6 +212,8 @@ local Templates = {
     --// UI \\-
     Frame = {
         BorderSizePixel = 0,
+        BackgroundTransparency = 0,
+        -- Shadow and gradient will be added in creation
     },
     ImageLabel = {
         BackgroundTransparency = 1,
@@ -214,15 +222,19 @@ local Templates = {
     ImageButton = {
         AutoButtonColor = false,
         BorderSizePixel = 0,
+        -- Add hover animation in creation
     },
     ScrollingFrame = {
         BorderSizePixel = 0,
+        BackgroundTransparency = 0.05,
     },
     TextLabel = {
         BorderSizePixel = 0,
         FontFace = "Font",
         RichText = true,
         TextColor3 = "FontColor",
+        TextStrokeTransparency = 0.8,
+        -- Add fade-in animation in creation
     },
     TextButton = {
         AutoButtonColor = false,
@@ -230,6 +242,7 @@ local Templates = {
         FontFace = "Font",
         RichText = true,
         TextColor3 = "FontColor",
+        -- Add hover/click animation in creation
     },
     TextBox = {
         BorderSizePixel = 0,
@@ -240,31 +253,37 @@ local Templates = {
         end,
         Text = "",
         TextColor3 = "FontColor",
+        -- Add focus animation in creation
     },
     UIListLayout = {
         SortOrder = Enum.SortOrder.LayoutOrder,
+        Padding = UDim.new(0, 8), -- More whitespace for modern look
     },
     UIStroke = {
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Color = "OutlineColor",
+        Thickness = 1.5,
+        Transparency = 0.2,
     },
 
     --// Library \\--
     Window = {
         Title = "No Title",
         Footer = "No Footer",
-        Position = UDim2.fromOffset(6, 6),
-        Size = UDim2.fromOffset(720, 600),
-        IconSize = UDim2.fromOffset(30, 30),
+        Position = UDim2.fromOffset(24, 24),
+        Size = UDim2.fromOffset(820, 640),
+        IconSize = UDim2.fromOffset(36, 36),
         AutoShow = true,
         Center = true,
         Resizable = true,
         SearchbarSize = UDim2.fromScale(1, 1),
-        CornerRadius = 4,
+        CornerRadius = 12,
         NotifySide = "Right",
         ShowCustomCursor = true,
-        Font = Enum.Font.Code,
+        Font = Enum.Font.Gotham,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
+        -- Add drop shadow and gradient in creation
     },
     Toggle = {
         Text = "Toggle",
@@ -5848,7 +5867,7 @@ function Library:CreateWindow(WindowInfo)
 
         MainFrame = New("TextButton", {
             BackgroundColor3 = function()
-                return Library:GetBetterColor(Library.Scheme.BackgroundColor, -1)
+                return Library.Scheme.BackgroundColor
             end,
             Name = "Main",
             Position = WindowInfo.Position,
@@ -5856,36 +5875,32 @@ function Library:CreateWindow(WindowInfo)
             Text = "",
             Visible = false,
             Parent = ScreenGui,
-
             DPIExclude = {
                 Position = true,
             },
         })
+        -- Modern card look: large rounded corners, drop shadow, gradient
         New("UICorner", {
-            CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
+            CornerRadius = UDim.new(0, WindowInfo.CornerRadius),
             Parent = MainFrame,
         })
-        do
-           local Lines = {
-				{
-					Position = UDim2.fromOffset(0, 48),
-					Size = UDim2.new(1, 0, 0, 1),
-				},
-				{
-					Position = UDim2.fromScale(0.3, 0.08),
-					Size = UDim2.new(0, 1, 0.95, -21),
-				},
-				{
-					AnchorPoint = Vector2.new(0, 1),
-					Position = UDim2.new(0, 0, 1, -20),
-					Size = UDim2.new(1, 0, 0, 1),
-				},
-			}
-			for _, Info in pairs(Lines) do
-				Library:MakeLine(MainFrame, Info)
-			end
-			Library:MakeOutline(MainFrame, WindowInfo.CornerRadius, 0)
-        end
+        local shadow = Instance.new("ImageLabel")
+        shadow.Name = "DropShadow"
+        shadow.Image = "rbxassetid://1316045217" -- Soft shadow asset
+        shadow.BackgroundTransparency = 1
+        shadow.ImageTransparency = 0.7
+        shadow.Size = UDim2.new(1, 48, 1, 48)
+        shadow.Position = UDim2.new(0, -24, 0, -24)
+        shadow.ZIndex = 0
+        shadow.Parent = MainFrame
+        -- Gradient overlay
+        local grad = Instance.new("UIGradient")
+        grad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Library.Scheme.GradientTop),
+            ColorSequenceKeypoint.new(1, Library.Scheme.GradientBottom)
+        })
+        grad.Rotation = 90
+        grad.Parent = MainFrame
 
         if WindowInfo.BackgroundImage then
             New("ImageLabel", {
@@ -6205,28 +6220,37 @@ function Library:CreateWindow(WindowInfo)
         do
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
-                BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 0, 40),
+                BackgroundTransparency = 0.1,
+                Size = UDim2.new(1, 0, 0, 48),
                 Text = "",
                 Parent = Tabs,
             })
-
-            New("UIPadding", {
-                PaddingBottom = UDim.new(0, 11),
-                PaddingLeft = UDim.new(0, 12),
-                PaddingRight = UDim.new(0, 12),
-                PaddingTop = UDim.new(0, 11),
+            New("UICorner", {
+                CornerRadius = UDim.new(0, 16),
                 Parent = TabButton,
             })
-
+            New("UIStroke", {
+                Color = "OutlineColor",
+                Thickness = 1.5,
+                Transparency = 0.2,
+                Parent = TabButton,
+            })
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 14),
+                PaddingLeft = UDim.new(0, 20),
+                PaddingRight = UDim.new(0, 20),
+                PaddingTop = UDim.new(0, 14),
+                Parent = TabButton,
+            })
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(30, 0),
-                Size = UDim2.new(1, -30, 1, 0),
+                Position = UDim2.fromOffset(36, 0),
+                Size = UDim2.new(1, -36, 1, 0),
                 Text = Name,
-                TextSize = 16,
+                TextSize = 18,
                 TextTransparency = 0.5,
                 TextXAlignment = Enum.TextXAlignment.Left,
+                FontFace = "Font",
                 Parent = TabButton,
             })
 
@@ -6488,6 +6512,23 @@ function Library:CreateWindow(WindowInfo)
             Library:UpdateDPI(Background, {
                 Size = false,
             })
+            -- Modern card look: shadow and gradient
+            local shadow = Instance.new("ImageLabel")
+            shadow.Name = "DropShadow"
+            shadow.Image = "rbxassetid://1316045217"
+            shadow.BackgroundTransparency = 1
+            shadow.ImageTransparency = 0.8
+            shadow.Size = UDim2.new(1, 32, 1, 32)
+            shadow.Position = UDim2.new(0, -16, 0, -16)
+            shadow.ZIndex = 0
+            shadow.Parent = Background
+            local grad = Instance.new("UIGradient")
+            grad.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Library.Scheme.GradientTop),
+                ColorSequenceKeypoint.new(1, Library.Scheme.GradientBottom)
+            })
+            grad.Rotation = 90
+            grad.Parent = Background
 
             local GroupboxHolder
             local GroupboxLabel
@@ -6776,15 +6817,18 @@ function Library:CreateWindow(WindowInfo)
                 Library.ActiveTab:Hide()
             end
 
-            TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0,
+            TweenService:Create(TabButton, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                BackgroundTransparency = 0.05,
+                Size = UDim2.new(1, 0, 0, 56),
             }):Play()
-            TweenService:Create(TabLabel, Library.TweenInfo, {
+            TweenService:Create(TabLabel, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
                 TextTransparency = 0,
+                TextSize = 20,
             }):Play()
             if TabIcon then
-                TweenService:Create(TabIcon, Library.TweenInfo, {
+                TweenService:Create(TabIcon, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
                     ImageTransparency = 0,
+                    Size = UDim2.fromOffset(28, 28),
                 }):Play()
             end
 
@@ -6806,15 +6850,18 @@ function Library:CreateWindow(WindowInfo)
         end
 
         function Tab:Hide()
-            TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 1,
+            TweenService:Create(TabButton, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                BackgroundTransparency = 0.2,
+                Size = UDim2.new(1, 0, 0, 48),
             }):Play()
-            TweenService:Create(TabLabel, Library.TweenInfo, {
+            TweenService:Create(TabLabel, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
                 TextTransparency = 0.5,
+                TextSize = 18,
             }):Play()
             if TabIcon then
-                TweenService:Create(TabIcon, Library.TweenInfo, {
+                TweenService:Create(TabIcon, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
                     ImageTransparency = 0.5,
+                    Size = UDim2.fromOffset(22, 22),
                 }):Play()
             end
             TabContainer.Visible = false
