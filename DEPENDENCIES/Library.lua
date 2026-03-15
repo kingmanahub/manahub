@@ -64,9 +64,9 @@ local Library = {
     Toggles = Toggles,
     Options = Options,
 
-  NotifySide = "Right",
+    NotifySide = "Right",
     ShowCustomCursor = true,
-    ForceCheckbox = false, -- Ensures we use modern sliding switches instead of boxes
+    ForceCheckbox = false,
     ShowToggleFrameInKeybinds = true,
     HideInactiveKeybinds = false,
     KeybindFrameEnabled = false,
@@ -81,21 +81,25 @@ local Library = {
 
     MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 8, -- Increased significantly for a smooth, rounded aesthetic
+    CornerRadius = 4,
 
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(10, 10, 12), -- Deep OLED Dark
-        MainColor = Color3.fromRGB(18, 18, 22),       -- Elevated panel color
-        AccentColor = Color3.fromRGB(0, 230, 255),    -- Vibrant Electric Cyan
-        OutlineColor = Color3.fromRGB(40, 42, 50),    -- Crisp, subtle outlines
-        FontColor = Color3.fromRGB(255, 255, 255),    -- Pure white for max readability
-        Font = Font.fromEnum(Enum.Font.Montserrat),   -- Modern, premium geometric font
+        BackgroundColor = Color3.fromRGB(15, 15, 15),
+        MainColor = Color3.fromRGB(25, 25, 25),
+        AccentColor = Color3.fromRGB(125, 85, 255),
+        OutlineColor = Color3.fromRGB(40, 40, 40),
+        FontColor = Color3.new(1, 1, 1),
+        Font = Font.fromEnum(Enum.Font.Code),
 
-        Red = Color3.fromRGB(255, 60, 80),            -- Vibrant alert red
-        Dark = Color3.fromRGB(5, 5, 5),
-        White = Color3.fromRGB(255, 255, 255),
+        Red = Color3.fromRGB(255, 50, 50),
+        Dark = Color3.new(0, 0, 0),
+        White = Color3.new(1, 1, 1),
     },
+
+    Registry = {},
+    DPIRegistry = {},
+}
 
 local ObsidianImageManager = {
     Assets = {
@@ -244,7 +248,7 @@ local Templates = {
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
     },
 
-   --// Library \\--
+    --// Library \\--
     Window = {
         Title = "No Title",
         Footer = "No Footer",
@@ -255,15 +259,13 @@ local Templates = {
         Center = true,
         Resizable = true,
         SearchbarSize = UDim2.fromScale(1, 1),
-        CornerRadius = 8,
+        CornerRadius = 4,
         NotifySide = "Right",
         ShowCustomCursor = true,
-        Font = Enum.Font.Montserrat,
+        Font = Enum.Font.Code,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
     },
-
-
     Toggle = {
         Text = "Toggle",
         Default = false,
@@ -5936,7 +5938,8 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-local X = Library:GetTextBounds(
+
+		local X = Library:GetTextBounds(
 			WindowInfo.Title,
 			Library.Scheme.Font,
 			20,
@@ -5947,7 +5950,6 @@ local X = Library:GetTextBounds(
             Size = UDim2.new(0, X, 1, 0),
             Text = WindowInfo.Title,
             TextSize = 20,
-            TextColor3 = "AccentColor", -- Forces the title to glow with your theme color
             Parent = TitleHolder,
         })
 
