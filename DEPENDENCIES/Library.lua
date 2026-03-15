@@ -53,8 +53,8 @@ local Library = {
     Notifications = {},
 
     ToggleKeybind = Enum.KeyCode.RightControl,
-    TweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-    NotifyTweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    TweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    NotifyTweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 
     Toggled = false,
     Unloaded = false,
@@ -79,22 +79,27 @@ local Library = {
     Signals = {},
     UnloadSignals = {},
 
-    MinSize = Vector2.new(480, 360),
+    MinSize = Vector2.new(520, 400),
     DPIScale = 1,
-    CornerRadius = 4,
+    CornerRadius = 10, -- More modern, rounded corners
 
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(15, 15, 15),
-        MainColor = Color3.fromRGB(25, 25, 25),
-        AccentColor = Color3.fromRGB(125, 85, 255),
-        OutlineColor = Color3.fromRGB(40, 40, 40),
-        FontColor = Color3.new(1, 1, 1),
-        Font = Font.fromEnum(Enum.Font.Code),
-
-        Red = Color3.fromRGB(255, 50, 50),
-        Dark = Color3.new(0, 0, 0),
-        White = Color3.new(1, 1, 1),
+        BackgroundColor = Color3.fromRGB(28, 30, 38),
+        MainColor = Color3.fromRGB(38, 40, 54),
+        AccentColor = Color3.fromRGB(120, 90, 255),
+        AccentColor2 = Color3.fromRGB(90, 200, 255),
+        TabInactive = Color3.fromRGB(44, 46, 60),
+        TabActive = Color3.fromRGB(120, 90, 255),
+        TabHover = Color3.fromRGB(100, 80, 200),
+        OutlineColor = Color3.fromRGB(60, 60, 80),
+        FontColor = Color3.fromRGB(245, 245, 255),
+        Font = Font.fromEnum(Enum.Font.SourceSansSemibold),
+        FontTab = Font.fromEnum(Enum.Font.GothamBold),
+        Red = Color3.fromRGB(255, 70, 70),
+        Dark = Color3.fromRGB(22, 22, 28),
+        White = Color3.fromRGB(255, 255, 255),
+        Shadow = Color3.fromRGB(0, 0, 0),
     },
 
     Registry = {},
@@ -252,17 +257,17 @@ local Templates = {
     Window = {
         Title = "No Title",
         Footer = "No Footer",
-        Position = UDim2.fromOffset(6, 6),
-        Size = UDim2.fromOffset(720, 600),
-        IconSize = UDim2.fromOffset(30, 30),
+        Position = UDim2.fromOffset(16, 16),
+        Size = UDim2.fromOffset(800, 650),
+        IconSize = UDim2.fromOffset(36, 36),
         AutoShow = true,
         Center = true,
         Resizable = true,
         SearchbarSize = UDim2.fromScale(1, 1),
-        CornerRadius = 4,
+        CornerRadius = 12,
         NotifySide = "Right",
         ShowCustomCursor = true,
-        Font = Enum.Font.Code,
+        Font = Enum.Font.SourceSansSemibold,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
     },
@@ -1189,6 +1194,21 @@ ScreenGui.DescendantRemoving:Connect(function(Instance)
     Library.DPIRegistry[Instance] = nil
 end)
 
+-- Add a subtle drop shadow for the main hub window
+local Shadow = New("Frame", {
+    Name = "HubShadow",
+    BackgroundColor3 = Library.Scheme.Shadow,
+    BackgroundTransparency = 0.7,
+    Size = UDim2.fromOffset(740, 620),
+    Position = UDim2.fromOffset(14, 14),
+    ZIndex = 998,
+    Parent = ScreenGui,
+})
+New("UICorner", {
+    CornerRadius = UDim.new(0, Library.CornerRadius + 6),
+    Parent = Shadow,
+})
+
 local ModalElement = New("TextButton", {
     BackgroundTransparency = 1,
     Modal = false,
@@ -1205,7 +1225,7 @@ do
     Cursor = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = "White",
-        Size = UDim2.fromOffset(9, 1),
+        Size = UDim2.fromOffset(10, 2),
         Visible = false,
         ZIndex = 999,
         Parent = ScreenGui,
@@ -1223,7 +1243,7 @@ do
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = "White",
         Position = UDim2.fromScale(0.5, 0.5),
-        Size = UDim2.fromOffset(1, 9),
+        Size = UDim2.fromOffset(2, 10),
         Parent = Cursor,
     })
     New("Frame", {
@@ -1243,13 +1263,13 @@ do
     NotificationArea = New("Frame", {
         AnchorPoint = Vector2.new(1, 0),
         BackgroundTransparency = 1,
-        Position = UDim2.new(1, -6, 0, 6),
-        Size = UDim2.new(0, 300, 1, -6),
+        Position = UDim2.new(1, -16, 0, 16),
+        Size = UDim2.new(0, 340, 1, -16),
         Parent = ScreenGui,
     })
     NotificationList = New("UIListLayout", {
         HorizontalAlignment = Enum.HorizontalAlignment.Right,
-        Padding = UDim.new(0, 6),
+        Padding = UDim.new(0, 10),
         Parent = NotificationArea,
     })
 end
