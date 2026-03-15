@@ -52,9 +52,9 @@ local Library = {
 
     Notifications = {},
 
-    ToggleKeybind = Enum.KeyCode.RightControl,
-    TweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-    NotifyTweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+ToggleKeybind = Enum.KeyCode.RightControl,
+    TweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+    NotifyTweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out),
 
     Toggled = false,
     Unloaded = false,
@@ -79,27 +79,22 @@ local Library = {
     Signals = {},
     UnloadSignals = {},
 
-    MinSize = Vector2.new(520, 400),
+    MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 10, -- More modern, rounded corners
+    CornerRadius = 6, -- Increased to 6 for a sleek pill look
 
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(28, 30, 38),
-        MainColor = Color3.fromRGB(38, 40, 54),
-        AccentColor = Color3.fromRGB(120, 90, 255),
-        AccentColor2 = Color3.fromRGB(90, 200, 255),
-        TabInactive = Color3.fromRGB(44, 46, 60),
-        TabActive = Color3.fromRGB(120, 90, 255),
-        TabHover = Color3.fromRGB(100, 80, 200),
-        OutlineColor = Color3.fromRGB(60, 60, 80),
-        FontColor = Color3.fromRGB(245, 245, 255),
-        Font = Font.fromEnum(Enum.Font.SourceSansSemibold),
-        FontTab = Font.fromEnum(Enum.Font.GothamBold),
-        Red = Color3.fromRGB(255, 70, 70),
-        Dark = Color3.fromRGB(22, 22, 28),
+        BackgroundColor = Color3.fromRGB(13, 15, 18), -- Deep, blue-tinted background
+        MainColor = Color3.fromRGB(20, 22, 27),       -- Slightly lighter for contrast panels
+        AccentColor = Color3.fromRGB(99, 102, 241),   -- Sleek modern Indigo accent
+        OutlineColor = Color3.fromRGB(38, 42, 48),    -- Subtle borders
+        FontColor = Color3.fromRGB(240, 240, 245),    -- Soft white to reduce eye strain
+        Font = Font.fromEnum(Enum.Font.GothamMedium), -- Gotham offers a clean, geometric look
+
+        Red = Color3.fromRGB(239, 68, 68),            -- Modern soft red
+        Dark = Color3.fromRGB(5, 5, 5),
         White = Color3.fromRGB(255, 255, 255),
-        Shadow = Color3.fromRGB(0, 0, 0),
     },
 
     Registry = {},
@@ -253,21 +248,21 @@ local Templates = {
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
     },
 
-    --// Library \\--
+--// Library \\--
     Window = {
         Title = "No Title",
         Footer = "No Footer",
-        Position = UDim2.fromOffset(16, 16),
-        Size = UDim2.fromOffset(800, 650),
-        IconSize = UDim2.fromOffset(36, 36),
+        Position = UDim2.fromOffset(6, 6),
+        Size = UDim2.fromOffset(720, 600),
+        IconSize = UDim2.fromOffset(30, 30),
         AutoShow = true,
         Center = true,
         Resizable = true,
         SearchbarSize = UDim2.fromScale(1, 1),
-        CornerRadius = 12,
+        CornerRadius = 6,
         NotifySide = "Right",
         ShowCustomCursor = true,
-        Font = Enum.Font.SourceSansSemibold,
+        Font = Enum.Font.GothamMedium,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
     },
@@ -1194,21 +1189,6 @@ ScreenGui.DescendantRemoving:Connect(function(Instance)
     Library.DPIRegistry[Instance] = nil
 end)
 
--- Add a subtle drop shadow for the main hub window
-local Shadow = New("Frame", {
-    Name = "HubShadow",
-    BackgroundColor3 = Library.Scheme.Shadow,
-    BackgroundTransparency = 0.7,
-    Size = UDim2.fromOffset(740, 620),
-    Position = UDim2.fromOffset(14, 14),
-    ZIndex = 998,
-    Parent = ScreenGui,
-})
-New("UICorner", {
-    CornerRadius = UDim.new(0, Library.CornerRadius + 6),
-    Parent = Shadow,
-})
-
 local ModalElement = New("TextButton", {
     BackgroundTransparency = 1,
     Modal = false,
@@ -1225,7 +1205,7 @@ do
     Cursor = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = "White",
-        Size = UDim2.fromOffset(10, 2),
+        Size = UDim2.fromOffset(9, 1),
         Visible = false,
         ZIndex = 999,
         Parent = ScreenGui,
@@ -1243,7 +1223,7 @@ do
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = "White",
         Position = UDim2.fromScale(0.5, 0.5),
-        Size = UDim2.fromOffset(2, 10),
+        Size = UDim2.fromOffset(1, 9),
         Parent = Cursor,
     })
     New("Frame", {
@@ -1263,13 +1243,13 @@ do
     NotificationArea = New("Frame", {
         AnchorPoint = Vector2.new(1, 0),
         BackgroundTransparency = 1,
-        Position = UDim2.new(1, -16, 0, 16),
-        Size = UDim2.new(0, 340, 1, -16),
+        Position = UDim2.new(1, -6, 0, 6),
+        Size = UDim2.new(0, 300, 1, -6),
         Parent = ScreenGui,
     })
     NotificationList = New("UIListLayout", {
         HorizontalAlignment = Enum.HorizontalAlignment.Right,
-        Padding = UDim.new(0, 10),
+        Padding = UDim.new(0, 6),
         Parent = NotificationArea,
     })
 end
@@ -3425,13 +3405,14 @@ do
             return Base, Stroke
         end
 
-        local function InitEvents(Button)
+     local function InitEvents(Button)
             Button.Base.MouseEnter:Connect(function()
                 if Button.Disabled then
                     return
                 end
 
                 Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
+                    BackgroundColor3 = Library:GetBetterColor(Library.Scheme.MainColor, 10),
                     TextTransparency = 0,
                 })
                 Button.Tween:Play()
@@ -3442,6 +3423,7 @@ do
                 end
 
                 Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
+                    BackgroundColor3 = Library.Scheme.MainColor,
                     TextTransparency = 0.4,
                 })
                 Button.Tween:Play()
