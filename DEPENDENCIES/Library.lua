@@ -52,9 +52,9 @@ local Library = {
 
     Notifications = {},
 
-ToggleKeybind = Enum.KeyCode.RightControl,
-    TweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
-    NotifyTweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out),
+    ToggleKeybind = Enum.KeyCode.RightControl,
+    TweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    NotifyTweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 
     Toggled = false,
     Unloaded = false,
@@ -64,9 +64,9 @@ ToggleKeybind = Enum.KeyCode.RightControl,
     Toggles = Toggles,
     Options = Options,
 
-    NotifySide = "Right",
+  NotifySide = "Right",
     ShowCustomCursor = true,
-    ForceCheckbox = false,
+    ForceCheckbox = false, -- Ensures we use modern sliding switches instead of boxes
     ShowToggleFrameInKeybinds = true,
     HideInactiveKeybinds = false,
     KeybindFrameEnabled = false,
@@ -81,25 +81,21 @@ ToggleKeybind = Enum.KeyCode.RightControl,
 
     MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 6, -- Increased to 6 for a sleek pill look
+    CornerRadius = 8, -- Increased significantly for a smooth, rounded aesthetic
 
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(13, 15, 18), -- Deep, blue-tinted background
-        MainColor = Color3.fromRGB(20, 22, 27),       -- Slightly lighter for contrast panels
-        AccentColor = Color3.fromRGB(99, 102, 241),   -- Sleek modern Indigo accent
-        OutlineColor = Color3.fromRGB(38, 42, 48),    -- Subtle borders
-        FontColor = Color3.fromRGB(240, 240, 245),    -- Soft white to reduce eye strain
-        Font = Font.fromEnum(Enum.Font.GothamMedium), -- Gotham offers a clean, geometric look
+        BackgroundColor = Color3.fromRGB(10, 10, 12), -- Deep OLED Dark
+        MainColor = Color3.fromRGB(18, 18, 22),       -- Elevated panel color
+        AccentColor = Color3.fromRGB(0, 230, 255),    -- Vibrant Electric Cyan
+        OutlineColor = Color3.fromRGB(40, 42, 50),    -- Crisp, subtle outlines
+        FontColor = Color3.fromRGB(255, 255, 255),    -- Pure white for max readability
+        Font = Font.fromEnum(Enum.Font.Montserrat),   -- Modern, premium geometric font
 
-        Red = Color3.fromRGB(239, 68, 68),            -- Modern soft red
+        Red = Color3.fromRGB(255, 60, 80),            -- Vibrant alert red
         Dark = Color3.fromRGB(5, 5, 5),
         White = Color3.fromRGB(255, 255, 255),
     },
-
-    Registry = {},
-    DPIRegistry = {},
-}
 
 local ObsidianImageManager = {
     Assets = {
@@ -248,7 +244,7 @@ local Templates = {
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
     },
 
---// Library \\--
+   --// Library \\--
     Window = {
         Title = "No Title",
         Footer = "No Footer",
@@ -259,13 +255,15 @@ local Templates = {
         Center = true,
         Resizable = true,
         SearchbarSize = UDim2.fromScale(1, 1),
-        CornerRadius = 6,
+        CornerRadius = 8,
         NotifySide = "Right",
         ShowCustomCursor = true,
-        Font = Enum.Font.GothamMedium,
+        Font = Enum.Font.Montserrat,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
     },
+
+
     Toggle = {
         Text = "Toggle",
         Default = false,
@@ -3405,14 +3403,13 @@ do
             return Base, Stroke
         end
 
-     local function InitEvents(Button)
+        local function InitEvents(Button)
             Button.Base.MouseEnter:Connect(function()
                 if Button.Disabled then
                     return
                 end
 
                 Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
-                    BackgroundColor3 = Library:GetBetterColor(Library.Scheme.MainColor, 10),
                     TextTransparency = 0,
                 })
                 Button.Tween:Play()
@@ -3423,7 +3420,6 @@ do
                 end
 
                 Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
-                    BackgroundColor3 = Library.Scheme.MainColor,
                     TextTransparency = 0.4,
                 })
                 Button.Tween:Play()
@@ -5940,8 +5936,7 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-
-		local X = Library:GetTextBounds(
+local X = Library:GetTextBounds(
 			WindowInfo.Title,
 			Library.Scheme.Font,
 			20,
@@ -5952,6 +5947,7 @@ function Library:CreateWindow(WindowInfo)
             Size = UDim2.new(0, X, 1, 0),
             Text = WindowInfo.Title,
             TextSize = 20,
+            TextColor3 = "AccentColor", -- Forces the title to glow with your theme color
             Parent = TitleHolder,
         })
 
